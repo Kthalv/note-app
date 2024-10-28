@@ -9,8 +9,9 @@ class NoteController extends Controller
 {
     public function showAllNotes()
     {
-        $notes = Note::orderBy('updated_at', 'desc')->get();
+         $notes = Note::orderBy('updated_at', 'desc')->get();
         return view('notes', ['notes' => $notes]);
+    
     }
 
     public function createNote()
@@ -80,6 +81,15 @@ class NoteController extends Controller
 
         return redirect()->route('showAllNotes')->with('Success', 'Note deleted successfully.');
     }
+
+    public function searchNote(Request $request)
+    {
+        $query = $request->input('query');
+        $notes = Note::where('title', 'LIKE', "%$query%")
+                     ->orWhere('description', 'LIKE', "%$query%")
+                     ->orWhere('content', 'LIKE', "%$query%")
+                     ->get();
+
+        return response()->json($notes);
+    }
 }
-       
-    
